@@ -1,0 +1,169 @@
+### Global Config
+
+logLevel = "DEBUG"
+debug = true
+defaultEntryPoints = ["http", "https"]
+
+[web]
+address = ":8080"
+
+# Entrypoints definition
+#
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+    # To redirect an http entrypoint to an https entrypoint (with SNI support):
+    [entryPoints.http.redirect]
+     entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+
+################################################################
+# Docker configuration backend
+################################################################
+
+# Enable Docker configuration backend
+#
+# Optional
+#
+[docker]
+
+# Docker server endpoint. Can be a tcp or a unix socket endpoint.
+#
+# Required
+#
+endpoint = "unix:///var/run/docker.sock"
+
+# Default domain used.
+# Can be overridden by setting the "traefik.domain" label on a container.
+#
+# Required
+#
+domain = "ginsys.io"
+
+# Enable watch docker changes
+#
+# Optional
+#
+watch = true
+
+# Override default configuration template. For advanced users :)
+#
+# Optional
+#
+# filename = "docker.tmpl"
+
+# Expose containers by default in traefik
+# If set to false, containers that don't have `traefik.enable=true` will be ignored
+#
+# Optional
+# Default: true
+#
+#exposedbydefault = true
+
+# Use the IP address from the binded port instead of the inner network one. For specific use-case :)
+
+#
+# Optional
+# Default: false
+#
+usebindportip = true
+# Use Swarm Mode services as data provider
+#
+# Optional
+# Default: false
+#
+swarmmode = true
+
+
+# Enable docker TLS connection
+#
+#  [docker.tls]
+#  ca = "/etc/ssl/ca.crt"
+#  cert = "/etc/ssl/docker.crt"
+#  key = "/etc/ssl/docker.key"
+#  insecureskipverify = true
+
+
+
+# Enable ACME (Let's Encrypt): automatic SSL
+#
+# Optional
+#
+[acme]
+
+# Email address used for registration
+#
+# Required
+#
+email = "test.traefik.io@srg.vg"
+
+# File or key used for certificates storage.
+# WARNING, if you use Traefik in Docker, you have 2 options:
+#  - create a file on your host and mount it as a volume
+#      storageFile = "acme.json"
+#      $ docker run -v "/my/host/acme.json:acme.json" traefik
+#  - mount the folder containing the file as a volume
+#      storageFile = "/etc/traefik/acme/acme.json"
+#      $ docker run -v "/my/host/acme:/etc/traefik/acme" traefik
+#
+# Required
+#
+storage = "acme.json" # or "traefik/acme/account" if using KV store
+
+# Entrypoint to proxy acme challenge/apply certificates to.
+# WARNING, must point to an entrypoint on port 443
+#
+# Required
+#
+entryPoint = "https"
+
+# If true, display debug log messages from the acme client library
+#
+# Optional
+#
+# acmeLogging = true
+acmeLogging = true
+
+# Enable on demand certificate. This will request a certificate from Let's Encrypt during the first TLS handshake for a hostname that does not yet have a certificate.
+# WARNING, TLS handshakes will be slow when requesting a hostname certificate for the first time, this can leads to DoS attacks.
+# WARNING, Take note that Let's Encrypt have rate limiting: https://letsencrypt.org/docs/rate-limits
+#
+# Optional
+#
+# onDemand = true
+onDemand = true
+
+# Enable certificate generation on frontends Host rules. This will request a certificate from Let's Encrypt for each frontend with a Host rule.
+# For example, a rule Host:test1.traefik.io,test2.traefik.io will request a certificate with main domain test1.traefik.io and SAN test2.traefik.io.
+#
+# Optional
+#
+# OnHostRule = true
+OnHostRule = true
+
+# CA server to use
+# Uncomment the line to run on the staging let's encrypt server
+# Leave comment to go to prod
+#
+# Optional
+#
+# caServer = "https://acme-staging.api.letsencrypt.org/directory"
+
+# Domains list
+# You can provide SANs (alternative domains) to each main domain
+# All domains must have A/AAAA records pointing to Traefik
+# WARNING, Take note that Let's Encrypt have rate limiting: https://letsencrypt.org/docs/rate-limits
+# Each domain & SANs will lead to a certificate request.
+#
+# [[acme.domains]]
+#   main = "local1.com"
+#   sans = ["test1.local1.com", "test2.local1.com"]
+# [[acme.domains]]
+#   main = "local2.com"
+#   sans = ["test1.local2.com", "test2x.local2.com"]
+# [[acme.domains]]
+#   main = "local3.com"
+# [[acme.domains]]
+#   main = "local4.com"

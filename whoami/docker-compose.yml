@@ -1,0 +1,61 @@
+---
+version: "3"
+
+networks:
+  traefik0:
+    external: true
+
+services:
+
+  whoami0:
+    image: "emilevauge/whoami"
+    #ports:
+    #  - "8081:8080"
+    #volumes:
+    #  - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - "traefik0"
+    deploy:
+      replicas: 10
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.01'
+          memory: 50M
+        reservations:
+          cpus: '0.05'
+          memory: 20M
+      labels:
+        traefik.enable: "true"
+        traefik.port: 80
+        traefik.backend.loadbalancer.sticky: "true"
+        traefik.frontend.passHostHeader: "true"
+        traefik.frontend.rule: Host:whoami.ginsys.io,whoami0.ginsys.io
+
+  whoami1:
+    image: "emilevauge/whoami"
+    #ports:
+    #  - "8081:8080"
+    #volumes:
+    #  - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - "traefik0"
+    deploy:
+      replicas: 10
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.01'
+          memory: 50M
+        reservations:
+          cpus: '0.05'
+          memory: 20M
+      labels:
+        traefik.enable: "true"
+        traefik.port: 80
+        traefik.backend.loadbalancer.sticky: "true"
+        traefik.frontend.passHostHeader: "true"
+        traefik.frontend.rule: Host:whoami1.ginsys.io,whoami11.ginsys.io
+
