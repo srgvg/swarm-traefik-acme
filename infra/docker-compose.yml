@@ -10,7 +10,7 @@ services:
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
-      - "8081:8080"
+      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
@@ -31,13 +31,19 @@ services:
           memory: 50M
       labels:
         traefik.enable: "false"
+        #traefik.docker.network: traefik0
+        #traefik.port: 8080
+        #traefik.backend.loadbalancer.sticky: "true"
+        #traefik.frontend.passHostHeader: "true"
+        #traefik.frontend.rule: Host:swarm.ginsys.io
+        #traefik.frontend.auth.basic: "toor:$apr1$B5HlT1Ke$BrwFqaWGUuRBIlKwOUnxo/"
 
   traefik:
     image: containous/traefik:v1.2.3
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
+      #- "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/data/infra/traefik/traefik.toml:/traefik.toml"
@@ -60,7 +66,11 @@ services:
           cpus: '0.10'
           memory: 50M
       labels:
-        SERVICE_IGNORE: "true"
-        traefik.enable: "false"
+        traefik.enable: "true"
+        traefik.docker.network: traefik0
+        traefik.port: 8080
+        traefik.backend.loadbalancer.sticky: "true"
+        traefik.frontend.passHostHeader: "true"
+        traefik.frontend.rule: Host:proxy.ginsys.io
 
 
