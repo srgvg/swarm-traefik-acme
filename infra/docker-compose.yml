@@ -38,6 +38,35 @@ services:
         #traefik.frontend.rule: Host:swarm.ginsys.io
         #traefik.frontend.auth.basic: "toor:$apr1$B5HlT1Ke$BrwFqaWGUuRBIlKwOUnxo/"
 
+  portainer:
+    image: portainer/portainer:linux-amd64-1.12.4
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./infra/portainer:/data"
+    networks:
+      - "traefik0"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+        reservations:
+          cpus: '0.50'
+          memory: 128M
+      labels:
+        traefik.enable: "true"
+        traefik.docker.network: traefik0
+        traefik.port: 9000
+        traefik.backend.loadbalancer.sticky: "true"
+        traefik.frontend.passHostHeader: "true"
+        traefik.frontend.rule: Host:swarm.ginsys.io
+
   traefik:
     image: containous/traefik:v1.2.3
     ports:

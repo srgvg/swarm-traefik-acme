@@ -2,5 +2,8 @@
 
 touch infra/traefik/acme.json
 chmod 600 infra/traefik/acme.json
+
+mkdir infra/portainer
+
 docker network create --driver overlay --subnet 10.10.10.0/24 --opt encrypted traefik0
 
