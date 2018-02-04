@@ -146,7 +146,7 @@ endpoint = "unix:///var/run/docker.sock"
 #
 # Required
 #
-domain = "ginsys.io"
+domain = "example.com"
 
 # Enable watch docker changes
 #
@@ -203,7 +203,7 @@ swarmmode = true
 #
 # Required
 #
-email = "test.traefik.io@srg.vg"
+email = "test.traefik.acme@example.com"
 
 # File or key used for certificates storage.
 # WARNING, if you use Traefik in Docker, you have 2 options:
